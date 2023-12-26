@@ -24,7 +24,7 @@ from django_ace import AceWidget
 from judge.models import BlogPost, Contest, ContestAnnouncement, ContestProblem, Language, LanguageLimit, \
     Organization, Problem, Profile, Solution, Submission, Tag, WebAuthnCredential
 from judge.utils.subscription import newsletter_id
-from judge.widgets import HeavyPreviewPageDownWidget, HeavySelect2MultipleWidget, HeavySelect2Widget, MartorWidget, \
+from judge.widgets import HeavySelect2MultipleWidget, HeavySelect2Widget, MartorWidget, \
     Select2MultipleWidget, Select2Widget
 
 TOTP_CODE_LENGTH = 6
@@ -75,11 +75,7 @@ class ProfileForm(ModelForm):
             fields.append('math_engine')
             widgets['math_engine'] = Select2Widget(attrs={'style': 'width:200px'})
 
-        if HeavyPreviewPageDownWidget is not None:
-            widgets['about'] = HeavyPreviewPageDownWidget(
-                preview=reverse_lazy('profile_preview'),
-                attrs={'style': 'max-width:700px;min-width:700px;width:700px'},
-            )
+        widgets['about'] = MartorWidget(attrs={'data-markdownfy-url': reverse_lazy('profile_preview')})
 
     def clean_about(self):
         if 'about' in self.changed_data and not self.instance.has_enough_solves:
@@ -229,11 +225,12 @@ class ProblemEditForm(ModelForm):
     class Meta:
         model = Problem
         fields = ['is_public', 'code', 'name', 'time_limit', 'memory_limit', 'points', 'partial',
-                  'statement_file', 'source', 'types', 'group', 'testcase_visibility_mode',
-                  'description', 'testers']
+                  'statement_file', 'source', 'types', 'group', 'submission_source_visibility_mode',
+                  'testcase_visibility_mode', 'description', 'testers']
         widgets = {
             'types': Select2MultipleWidget,
             'group': Select2Widget,
+            'submission_source_visibility_mode': Select2Widget,
             'testcase_visibility_mode': Select2Widget,
             'description': MartorWidget(attrs={'data-markdownfy-url': reverse_lazy('problem_preview')}),
             'testers': HeavySelect2MultipleWidget(
@@ -421,8 +418,7 @@ class OrganizationForm(ModelForm):
     class Meta:
         model = Organization
         fields = ['name', 'slug', 'is_open', 'about', 'logo_override_image', 'admins']
-        if HeavyPreviewPageDownWidget is not None:
-            widgets = {'about': HeavyPreviewPageDownWidget(preview=reverse_lazy('organization_preview'))}
+        widgets = {'about': MartorWidget(attrs={'data-markdownfy-url': reverse_lazy('organization_preview')})}
         if HeavySelect2MultipleWidget is not None:
             widgets.update({
                 'admins': HeavySelect2MultipleWidget(
@@ -432,19 +428,29 @@ class OrganizationForm(ModelForm):
             })
 
 
-class CustomAuthenticationForm(AuthenticationForm):
+class SocialAuthMixin:
+    def _has_social_auth(self, key):
+        return (getattr(settings, 'SOCIAL_AUTH_%s_KEY' % key, None) and
+                getattr(settings, 'SOCIAL_AUTH_%s_SECRET' % key, None))
+
+    @property
+    def has_google_auth(self):
+        return self._has_social_auth('GOOGLE_OAUTH2')
+
+    @property
+    def has_facebook_auth(self):
+        return self._has_social_auth('FACEBOOK')
+
+    @property
+    def has_github_auth(self):
+        return self._has_social_auth('GITHUB_SECURE')
+
+
+class CustomAuthenticationForm(AuthenticationForm, SocialAuthMixin):
     def __init__(self, *args, **kwargs):
         super(CustomAuthenticationForm, self).__init__(*args, **kwargs)
         self.fields['username'].widget.attrs.update({'placeholder': _('Username')})
         self.fields['password'].widget.attrs.update({'placeholder': _('Password')})
-
-        self.has_google_auth = self._has_social_auth('GOOGLE_OAUTH2')
-        self.has_facebook_auth = self._has_social_auth('FACEBOOK')
-        self.has_github_auth = self._has_social_auth('GITHUB_SECURE')
-
-    def _has_social_auth(self, key):
-        return (getattr(settings, 'SOCIAL_AUTH_%s_KEY' % key, None) and
-                getattr(settings, 'SOCIAL_AUTH_%s_SECRET' % key, None))
 
     def clean(self):
         username = self.cleaned_data.get('username')
