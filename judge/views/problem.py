@@ -886,18 +886,20 @@ class ProblemImportPolygon(PermissionRequiredMixin, TitleMixin, FormView):
             config = {
                 'ignore_zero_point_batches': form.cleaned_data['ignore_zero_point_batches'],
                 'ignore_zero_point_cases': form.cleaned_data['ignore_zero_point_cases'],
+                'append_main_solution_to_tutorial': form.cleaned_data['append_main_solution_to_tutorial'],
                 'main_tutorial_language': form.cleaned_data.get('main_tutorial_language', None),
                 'main_statement_language': None,
                 'polygon_to_site_language_map': {},
             }
-            for statement in formset:
-                polygon_language = statement.cleaned_data['polygon_language']
-                site_language = statement.cleaned_data['site_language']
+            if len(formset) > 1:
+                for statement in formset:
+                    polygon_language = statement.cleaned_data['polygon_language']
+                    site_language = statement.cleaned_data['site_language']
 
-                if site_language == settings.LANGUAGE_CODE:
-                    config['main_statement_language'] = polygon_language
-                else:
-                    config['polygon_to_site_language_map'][polygon_language] = site_language
+                    if site_language == settings.LANGUAGE_CODE:
+                        config['main_statement_language'] = polygon_language
+                    else:
+                        config['polygon_to_site_language_map'][polygon_language] = site_language
 
             try:
                 importer = PolygonImporter(
