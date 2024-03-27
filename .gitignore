@@ -40,3 +40,16 @@ tmp.sh
 *.sql
 fc_*
 local_urls.py
+django_ace/.DS_Store
+judge/.DS_Store
+judge/jinja2/.DS_Store
+judge/management/.DS_Store
+judge/models/.DS_Store
+judge/utils/.DS_Store
+judge/views/.DS_Store
+locale/.DS_Store
+resources/.DS_Store
+templates/admin/.DS_Store
+templates/.DS_Store
+resources/vnoj/.DS_Store
+.DS_Store
