@@ -173,9 +173,9 @@ DISCORD_WEBHOOK = {
 
 SITE_FULL_URL = None  # ie 'https://oj.vnoi.info', please remove the last / if needed
 
-ACE_URL = '//cdnjs.cloudflare.com/ajax/libs/ace/1.1.3'
-SELECT2_JS_URL = '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js'
-SELECT2_CSS_URL = '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css'
+ACE_URL = '/static/vnoj/ace/1.4.14'
+SELECT2_JS_URL = '/static/vnoj/select2/4.0.3/js/select2.min.js'
+SELECT2_CSS_URL = '/static/vnoj/select2/4.0.3/css/select2.min.css'
 
 DMOJ_CAMO_URL = None
 DMOJ_CAMO_KEY = None
@@ -281,8 +281,8 @@ DEFAULT_USER_LANGUAGE = 'CPP17'
 
 INLINE_JQUERY = True
 INLINE_FONTAWESOME = True
-JQUERY_JS = '//ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js'
-FONTAWESOME_CSS = '//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css'
+JQUERY_JS = '/static/vnoj/jquery/3.4.1/jquery.min.js'
+FONTAWESOME_CSS = '/static/vnoj/font-awesome/4.3.0/css/font-awesome.min.css'
 DMOJ_CANONICAL = 'oj.vnoi.info'
 
 # Application definition
@@ -698,6 +698,7 @@ AUTHENTICATION_BACKENDS = (
     'social_core.backends.facebook.FacebookOAuth2',
     'judge.social_auth.GitHubSecureEmailOAuth2',
     'django.contrib.auth.backends.ModelBackend',
+    'judge.ip_auth.IPBasedAuthBackend',
 )
 
 SOCIAL_AUTH_PIPELINE = (
@@ -722,6 +723,8 @@ SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 SOCIAL_AUTH_SLUGIFY_USERNAMES = True
 SOCIAL_AUTH_SLUGIFY_FUNCTION = 'judge.social_auth.slugify_username'
 SOCIAL_AUTH_PROTECTED_USER_FIELDS = ['first_name', 'last_name']
+
+IP_BASED_AUTHENTICATION_HEADER = 'REMOTE_ADDR'
 
 MOSS_API_KEY = None
 
