@@ -388,5 +388,7 @@
 {% endblock %}
 
 {% block bodyend %}
-    {# Don't load MathJax from common-content! #}
+    {% if REQUIRE_JAX %}
+        {% include "mathjax-load.html" %}
+    {% endif %}
 {% endblock %}
