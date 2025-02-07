@@ -53,3 +53,4 @@ templates/admin/.DS_Store
 templates/.DS_Store
 resources/vnoj/.DS_Store
 .DS_Store
+celerybeat-schedule.*
