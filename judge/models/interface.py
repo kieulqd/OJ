@@ -16,7 +16,7 @@ __all__ = ['MiscConfig', 'validate_regex', 'NavigationBar', 'BlogPost', 'BlogPos
 
 
 class MiscConfig(models.Model):
-    key = models.CharField(max_length=30, verbose_name=_('key'), db_index=True)
+    key = models.CharField(max_length=30, verbose_name=_('key'), unique=True)
     value = models.TextField(verbose_name=_('value'), blank=True)
 
     def __str__(self):
@@ -144,6 +144,7 @@ class BlogPost(models.Model):
             ('edit_organization_post', _('Edit organization posts')),
             ('mark_global_post', _('Mark post as global')),
             ('pin_post', _('Pin post')),
+            ('manage_magazine_post', _('Manage magazine blog posts')),
         )
         verbose_name = _('blog post')
         verbose_name_plural = _('blog posts')

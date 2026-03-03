@@ -24,7 +24,6 @@ bridge_log.txt
 _mytempfile/
 tmp_uwsgi.ini
 nginx_template.conf
-martor/
 judge/fixtures/fixed*
 judge/fixtures/voj_*
 judge/fixtures/VOJ_*
@@ -58,3 +57,4 @@ resources/vnoj/.DS_Store
 celerybeat-schedule.*
 resources/blog-modern.css
 resources/blog-post.css
+resources/theme-toggle.css
